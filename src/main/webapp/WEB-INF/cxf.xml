@@ -1,0 +1,47 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:jaxws="http://cxf.apache.org/jaxws"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+       http://cxf.apache.org/jaxws
+       http://cxf.apache.org/schemas/jaxws.xsd"
+       default-autowire="byName">
+
+    <!-- Aegis data binding -->
+    <bean id="aegisBean"
+          class="org.apache.cxf.aegis.databinding.AegisDatabinding"
+          scope="prototype"/>
+
+    <bean id="aegisBeanMtom" parent="aegisBean" scope="prototype" class="org.apache.cxf.aegis.databinding.AegisDatabinding">
+        <property name="mtomEnabled" value="true"/>
+        <property name="mtomUseXmime" value="true"/>
+    </bean>
+
+    <bean id="jaxws-and-aegis-service-factory"
+          class="org.apache.cxf.jaxws.support.JaxWsServiceFactoryBean"
+          scope="prototype">
+        <property name="dataBinding" ref="aegisBean"/>
+        <property name="serviceConfigurations">
+            <list>
+                <bean class="org.apache.cxf.jaxws.support.JaxWsServiceConfiguration"/>
+                <bean class="org.apache.cxf.aegis.databinding.XFireCompatibilityServiceConfiguration"/>
+                <bean class="org.apache.cxf.wsdl.service.factory.DefaultServiceConfiguration"/>
+            </list>
+        </property>
+    </bean>
+
+    <alias name="jaxws-and-aegis-service-factory" alias="jaxWsAegisServiceFactory"/>
+
+    <bean id="jaxws-and-aegis-service-factory-mtom" parent="jaxws-and-aegis-service-factory" scope="prototype">
+        <property name="dataBinding" ref="aegisBeanMtom"/>
+    </bean>
+
+    <jaxws:endpoint id="changeStudent"
+                    implementor="com.student.ChangeStudentDetailsImpl"
+                    address="/ChangeStudent">
+        <jaxws:serviceFactory>
+            <ref bean='jaxws-and-aegis-service-factory' />
+        </jaxws:serviceFactory>
+    </jaxws:endpoint>
+
+</beans>
