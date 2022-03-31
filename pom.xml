@@ -20,7 +20,7 @@
         <java.target.version>11</java.target.version>
         <java.home>/opt/jdk-11.0.3.7.1</java.home>
         <org.springframework.version>4.3.1.RELEASE</org.springframework.version>
-        <org.springframework.core.version>4.3.1.RELEASE</org.springframework.core.version>
+        <org.springframework.core.version>5.3.18</org.springframework.core.version>
     </properties>
     <dependencies>
         <dependency>
